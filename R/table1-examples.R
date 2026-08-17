@@ -95,4 +95,24 @@ add_p(test= list(
 	all_categorical() ~ "chisq.test"
 )) |>
 # add overall
-add_overall(col_label = "**Total** N = {N}")
+add_overall(col_label = "**Total** N = {N}") |>
+	modify_footnote_body(
+		footnote = "https://www.nlsinfo.org/content/cohorts/nlsy79/topical-guide/household/race-ethnicity-immigration-data",
+		columns = "label",
+		rows = variable == "race_eth_cat" & row_type == "label"
+	)
+
+# Find statistics (above)
+tbl_summary(nlsy, by = sex_cat,
+						include = c(region_cat,race_eth_cat,income, starts_with("sleep")),
+						digits= list(income ~3,
+												 starts_with("sleep") ~ 1),
+						statistic = list(income ~ "{p10}, {p90}",
+														 starts_with("sleep")~ "{min},{max}"),
+						label = list(
+							race_eth_cat ~ "Race/ethnicity",
+							region_cat ~ "Region",
+							income ~ "Income",
+							sleep_wknd ~ "Sleeps on weekends",
+							sleep_wkdy ~ "Sleeps on weekdays"))
+
