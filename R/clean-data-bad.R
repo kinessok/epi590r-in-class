@@ -20,3 +20,4 @@ nlsy <- na.omit(nlsy)
 
 setwd("../clean/")
 write_rds(nlsy, "nlsy-complete-cases.rds")
+install.packages("here")
