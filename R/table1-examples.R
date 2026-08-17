@@ -81,4 +81,18 @@ tbl_summary(
   # add a caption
   modify_caption("**Participant characteristics**")
 
-
+tbl_summary(nlsy, by = sex_cat,
+						include = c(region_cat,race_eth_cat,income, starts_with("sleep")),
+						label = list(
+						race_eth_cat ~ "Race/ethnicity",
+						region_cat ~ "Region",
+						income ~ "Income",
+						sleep_wknd ~ "Sleeps on weekends",
+						sleep_wkdy ~ "Sleeps on weekdays")) |>
+# add p-value
+add_p(test= list(
+	all_continuous() ~ "t.test",
+	all_categorical() ~ "chisq.test"
+)) |>
+# add overall
+add_overall(col_label = "**Total** N = {N}")
