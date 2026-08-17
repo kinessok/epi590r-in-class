@@ -1,5 +1,6 @@
 library(tidyverse)
 library(gtsummary)
+install.packages("dplyr")
 
 # load and clean data
 nlsy_cols <- c(
@@ -104,6 +105,7 @@ tbl_regression(
 # we need to create and store the tables first
 
 # table for the model without interaction
+
 tbl_no_int <- tbl_regression(
   linear_model,
   intercept = TRUE,
@@ -131,4 +133,64 @@ tbl_merge(list(tbl_no_int, tbl_int),
   tab_spanner = c("**Model 1**", "**Model 2**")
 )
 
+#Number 3 Create a univariate regression table looking at the association
+#between sex (sex_cat) as the x = variable and each of nsibs, sleep_wkdy, and
+#sleep_wknd, and income.
+
+tbl_uvregression(
+	nlsy,
+	x = sex_cat,
+	include = c(
+		nsibs, income,
+		starts_with("sleep")),
+	method = lm)
+
+# Number 4 Fit a Poisson regression (family = poisson()) for the number of
+# siblings, using at least 3 predictors of your choice. Create a nice table
+# displaying your Poisson regression and its exponentiated coefficients.
+# Fit the Poisson regression model
+poisson_model <- glm(nsibs ~ income + sex_cat + eyesight_cat,
+						 data = nlsy,
+						 family = poisson())
+tbl_regression(
+	poisson_model,
+	exponentiate = TRUE,
+	label = list(
+		sex_cat ~ "Sex",
+		eyesight_cat ~ "Eyesight",
+		income ~ "Income (USD)"
+	)
+)
+
+# Number 5 Instead of odds ratios for wearing glasses, as in the example in the
+# slides., we want risk ratios
+
+# Number 6 Make a table comparing the logistic and the log-binomial results.
+
+# log-binomial model
+logbinomial_model <- glm(glasses ~ eyesight_cat + sex_cat,
+												 data = nlsy, family = binomial(link = "log")
+)
+
+logistic_table <- tbl_regression(
+	logistic_model,
+	exponentiate = TRUE,
+	label = list(
+		sex_cat ~ "Sex",
+		eyesight_cat ~ "Eyesight"
+	)
+)
+
+logbinomial_table <- tbl_regression(
+	logbinomial_model,
+	exponentiate = TRUE,
+	label = list(
+		sex_cat ~ "Sex",
+		eyesight_cat ~ "Eyesight"
+	)
+)
+
+tbl_merge(list(logistic_table, logbinomial_table),
+					tab_spanner = c("**Logistic**", "**Log-binomial**")
+)
 
