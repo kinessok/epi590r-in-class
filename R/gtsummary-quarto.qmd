@@ -69,3 +69,13 @@ tbl_summary(
   include = c(sex_cat, race_eth_cat, region_cat,
               eyesight_cat, glasses, age_bir))
 ```
+
+```{r}
+#| label: tbl-one
+#| tbl-cap: "This is a table of a dataframe"
+tbl_summary(
+	nlsy,
+	by = region_cat,
+	include = c(sleep_wknd, age_bir, sex_cat))
+```
+@tbl-one shows the descriptive statistics about sleep
