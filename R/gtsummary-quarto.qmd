@@ -71,11 +71,63 @@ tbl_summary(
 ```
 
 ```{r}
-#| label: tbl-one
-#| tbl-cap: "This is a table of a dataframe"
-tbl_summary(
-	nlsy,
-	by = region_cat,
-	include = c(sleep_wknd, age_bir, sex_cat))
+#| label: tbl-sleep
+#| tbl-cap: "Descriptive statistics including sleep"
+sleep_table <- tbl_summary(nlsy,
+						include = c(starts_with("sleep"), sex_cat),
+						by = region_cat)|>
+	add_overall()
+sleep_table
 ```
 @tbl-one shows the descriptive statistics about sleep
+
+```{r}
+sleep_median <-median(nlsy$sleep_wknd, na.rm = TRUE)
+sleep_median
+```
+The median number hours of sleep during the weekend was `r sleep_median`
+
+```{r}
+sleep_table$table_body
+inline_text(sleep_table, variable = "sleep_wknd",
+						column = "stat_0")
+
+inline_text(sleep_table, variable = "sex_cat",
+ 						level = "Female",
+ 						column = "stat_0")
+inline_text (sleep_table, variable = "sleep_wknd",
+            pattern = "{median}, IQR= ({p25}, {p75})")
+```
+
+`In the sample the average sleep on weekends was `r inline_text(sleep_table, variable = "sleep_wknd", column = "stat_0")`
+
+```{r}
+median_iqr <- inline_text(sleep_table, variable = "sleep_wknd",
+						column = "stat_0")
+just_median <- inline_text(sleep_table, variable = "sleep_wknd",
+						column = "stat_0", pattern = "{median}")
+median_text <- inline_text(sleep_table, variable = "sleep_wknd",
+						column = "stat_0", pattern = "{median}, IQR = [{p25}, {p75}]")
+```
+
+
+There are multiple ways we could report the median, `r median_iqr`, or we could say `r just_median`, or finally `r median_text`.
+
+```{r}
+#| label: tbl-sleep-means
+#| tbl-cap: "Descriptive statistics including sleep"
+sleep_table2 <- tbl_summary(nlsy,
+						include = c(starts_with("sleep"), sex_cat),
+						by = region_cat,
+						statistic = list(all_continuous() ~ "{mean}, sd = {sd}")) |>
+	add_overall()
+sleep_table2
+```
+
+```{r}
+inline_text(sleep_table2, variable = "sleep_wknd",
+						column = "stat_0")
+
+inline_text(sleep_table2, variable = "sleep_wknd",
+						column = "stat_0", pattern = "{mean}")
+```
