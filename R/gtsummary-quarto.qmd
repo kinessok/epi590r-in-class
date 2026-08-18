@@ -25,6 +25,17 @@ nlsy <- read_csv(here::here("data", "raw", "nlsy.csv"),
          glasses_cat = factor(glasses, labels = c("No", "Yes")))
 ```
 
+The **NLSY79 Cohort is a longitudinal project that follows the lives of a sample of American youth born between 1957-1964.** The cohort originally included 12,686 respondents ages 14-22 when first interviewed in 1979; after two subsamples were dropped, 9,964 respondents remain in the eligible samples. Data are now available from Round 1 (1979 survey year) to Round 30 (2022 survey year).
+
+- bullet
+
+- Number
+
+- Hello\
+  1.
+
+  2.  
+
 # Customization of `tbl_summary()`
 
 ```{r}
@@ -53,7 +64,7 @@ tbl_summary(
 
 ```{r}
 tbl_summary(
-  NLSY,
+ nlsy,
   by = sex_cat,
   include = c(sex_cat, race_eth_cat, region_cat,
               eyesight_cat, glasses, age_bir))
